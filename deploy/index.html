@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Lab Ultimate</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:#e9f5ff;font-family:Arial,sans-serif}
+header{padding:25px 15px;text-align:center;background:#10243a;border-bottom:2px solid #36e6ff}
+header h1{color:#36e6ff;margin:5px}
+header p{color:#a9c6d9}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:#0b1929;position:sticky;top:0;z-index:5}
+nav a{color:#36e6ff;text-decoration:none;white-space:nowrap;padding:8px;border:1px solid #24516a;border-radius:8px}
+main{max-width:1000px;margin:auto;padding:14px}
+section{margin:20px 0;scroll-margin-top:65px}
+.card{background:#10243a;border:1px solid #24516a;border-radius:13px;padding:17px;margin:12px 0}
+h2,h3{color:#36e6ff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.tile{background:#10243a;padding:15px;border-radius:10px;border:1px solid #24516a}
+label{display:block;margin-top:12px;color:#b8d4e6}
+input,select,textarea{width:100%;padding:12px;margin-top:5px;background:#07111f;color:white;border:1px solid #36e6ff;border-radius:7px;font-size:16px}
+button{background:#36e6ff;color:#07111f;border:0;border-radius:7px;padding:12px 16px;margin-top:12px;font-weight:bold}
+.result{color:#91ffbd;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:12px;line-height:1.7}
+canvas{width:100%;height:220px;background:#07111f;border-radius:8px;margin-top:12px}
+small{color:#a9c6d9}
+.formula{color:#ffe58a;font-size:17px}
+footer{text-align:center;color:#91a9bc;padding:25px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>⚛ PHYSICS LAB ULTIMATE</h1>
+<p>Advanced Virtual Physics Laboratory</p>
+<div id="status">Connecting...</div>
+<div id="clock"></div>
+</header>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#mechanics">Mechanics</a>
+<a href="#projectile">Projectile</a>
+<a href="#electricity">Electricity</a>
+<a href="#optics">Optics</a>
+<a href="#waves">Waves</a>
+<a href="#astronomy">Astronomy</a>
+<a href="#thermo">Thermodynamics</a>
+<a href="#graphs">Graphs</a>
+<a href="#study">Study</a>
+</nav>
+
+<main>
+<section id="home">
+<h2>Dashboard</h2>
+<div class="grid">
+<div class="tile">⚙️<h3>Mechanics</h3><small>Motion and energy</small></div>
+<div class="tile">🚀<h3>Projectile</h3><small>Trajectory simulation</small></div>
+<div class="tile">🔌<h3>Electricity</h3><small>Ohm's law</small></div>
+<div class="tile">🔍<h3>Optics</h3><small>Lens formula</small></div>
+<div class="tile">🌊<h3>Waves</h3><small>Wave equation</small></div>
+<div class="tile">🪐<h3>Astronomy</h3><small>Orbital physics</small></div>
+<div class="tile">🌡️<h3>Thermodynamics</h3><small>Heat calculations</small></div>
+<div class="tile">📈<h3>Graph Studio</h3><small>Scientific graphs</small></div>
+</div>
+</section>
+
+<section id="mechanics">
+<div class="card">
+<h2>⚙️ Mechanics Calculator</h2>
+<p class="formula">v = u + at | s = ut + ½at²</p>
+<label>Initial velocity u (m/s)</label><input id="mu" type="number" value="5">
+<label>Acceleration a (m/s²)</label><input id="ma" type="number" value="2">
+<label>Time t (seconds)</label><input id="mt" type="number" value="10">
+<label>Mass (kg)</label><input id="mm" type="number" value="2">
+<button onclick="calculate('/api/mechanics',['u','a','t','mass'],['mu','ma','mt','mm'],'mr')">Calculate Mechanics</button>
+<div class="result" id="mr"></div>
+</div>
+</section>
+
+<section id="projectile">
+<div class="card">
+<h2>🚀 Projectile Motion</h2>
+<p class="formula">T = 2u sinθ/g | H = u²sin²θ/2g</p>
+<label>Initial velocity (m/s)</label><input id="pv" type="number" value="20">
+<label>Angle (degrees)</label><input id="pa" type="number" value="45">
+<label>Gravity (m/s²)</label><input id="pg" type="number" value="9.8">
+<button onclick="projectile()">Calculate Projectile</button>
+<div class="result" id="pr"></div>
+<canvas id="projectileCanvas"></canvas>
+</div>
+</section>
+
+<section id="electricity">
+<div class="card">
+<h2>🔌 Electricity Lab</h2>
+<p class="formula">V = IR | P = VI</p>
+<label>Voltage (V)</label><input id="ev" type="number" value="12">
+<label>Resistance (Ω)</label><input id="er" type="number" value="6">
+<button onclick="calculate('/api/ohm',['voltage','resistance'],['ev','er'],'electResult')">Calculate Electricity</button>
+<div class="result" id="electResult"></div>
+</div>
+</section>
+
+<section id="optics">
+<div class="card">
+<h2>🔍 Optics Lab</h2>
+<p class="formula">1/f = 1/v - 1/u</p>
+<small>Use signed distances according to the Cartesian sign convention.</small>
+<label>Object distance u</label><input id="ou" type="number" value="-30">
+<label>Focal length f</label><input id="of" type="number" value="10">
+<button onclick="calculate('/api/optics',['u','f'],['ou','of'],'or')">Calculate Optics</button>
+<div class="result" id="or"></div>
+</div>
+</section>
+
+<section id="waves">
+<div class="card">
+<h2>🌊 Waves Lab</h2>
+<p class="formula">v = fλ | T = 1/f</p>
+<label>Frequency (Hz)</label><input id="wf" type="number" value="50">
+<label>Wavelength (m)</label><input id="wl" type="number" value="2">
+<button onclick="calculate('/api/waves',['frequency','wavelength'],['wf','wl'],'wr')">Calculate Wave</button>
+<div class="result" id="wr"></div>
+</div>
+</section>
+
+<section id="astronomy">
+<div class="card">
+<h2>🪐 Astronomy Lab</h2>
+<p class="formula">vₑ = √(2GM/R)</p>
+<label>Planet mass (kg)</label><input id="am" type="number" value="5.972e24">
+<label>Planet radius (m)</label><input id="ar" type="number" value="6371000">
+<button onclick="calculate('/api/astronomy',['mass','radius'],['am','ar'],'astr')">Calculate Astronomy</button>
+<div class="result" id="astr"></div>
+</div>
+</section>
+
+<section id="thermo">
+<div class="card">
+<h2>🌡️ Thermodynamics</h2>
+<p class="formula">Q = mcΔT</p>
+<label>Mass (kg)</label><input id="tm" type="number" value="2">
+<label>Specific heat (J/kg K)</label><input id="tc" type="number" value="4200">
+<label>Temperature change (K)</label><input id="td" type="number" value="10">
+<button onclick="calculate('/api/thermo',['mass','specific_heat','temperature_change'],['tm','tc','td'],'tr')">Calculate Heat</button>
+<div class="result" id="tr"></div>
+</div>
+</section>
+
+<section id="graphs">
+<div class="card">
+<h2>📈 Graph Studio</h2>
+<p>Position-time graph for uniformly accelerated motion.</p>
+<label>Initial velocity (m/s)</label><input id="gv" type="number" value="5">
+<label>Acceleration (m/s²)</label><input id="ga" type="number" value="2">
+<button onclick="drawMotion()">Draw Graph</button>
+<canvas id="motionCanvas"></canvas>
+<div class="result" id="gr"></div>
+</div>
+</section>
+
+<section id="study">
+<div class="card">
+<h2>📚 BSc Physics Study Centre</h2>
+<h3>Important Physics Formulas</h3>
+<div class="result">
+Mechanics:
+v = u + at
+s = ut + ½at²
+F = ma
+K.E. = ½mv²
+P.E. = mgh
+
+Electricity:
+V = IR
+P = VI
+R = ρL/A
+
+Waves:
+v = fλ
+T = 1/f
+
+Optics:
+1/f = 1/v - 1/u
+m = v/u
+
+Thermodynamics:
+Q = mcΔT
+PV = nRT
+
+Astronomy:
+F = GMm/r²
+vₑ = √(2GM/R)
+</div>
+<h3>Physics Constants</h3>
+<button onclick="loadConstants()">Load Constants</button>
+<div class="result" id="constantResult"></div>
+</div>
+</section>
+
+<section>
+<div class="card">
+<h2>🧪 Experiment Data Lab</h2>
+<p>તમારા experiment ના observations લખો. CSV format માં export કરી શકો છો.</p>
+<label>Experiment observations (એક row દીઠ એક line)</label>
+<textarea id="tableData" rows="5" placeholder="Time,Distance&#10;1,2.5&#10;2,5.0"></textarea>
+<button onclick="exportCSV()">Prepare CSV</button>
+<div class="result" id="csvResult"></div>
+</div>
+</section>
+
+</main>
+<footer>PHYSICS LAB ULTIMATE • Educational Use</footer>
+
+<script>
+function clock(){
+ document.getElementById('clock').textContent=new Date().toLocaleString();
+}
+setInterval(clock,1000);clock();
+
+async function checkStatus(){
+ try{
+  const r=await fetch('/api/status');
+  const d=await r.json();
+  document.getElementById('status').textContent=d.status+' • '+d.version;
+ }catch(e){
+  document.getElementById('status').textContent='Server connection error';
+ }
+}
+checkStatus();
+
+async function calculate(url,keys,ids,resultId){
+ const result=document.getElementById(resultId);
+ const data={};
+ for(let i=0;i<keys.length;i++){
+  const x=Number(document.getElementById(ids[i]).value);
+  if(!Number.isFinite(x)){
+   result.textContent='Please enter valid numbers';
+   return;
+  }
+  data[keys[i]]=x;
+ }
+ try{
+  const r=await fetch(url,{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify(data)
+  });
+  const d=await r.json();
+  result.textContent=r.ok?
+   Object.entries(d).map(([k,v])=>k+': '+v).join('\n'):
+   d.error;
+ }catch(e){result.textContent='Connection error';}
+}
+
+async function projectile(){
+ const v=Number(document.getElementById('pv').value);
+ const a=Number(document.getElementById('pa').value);
+ const g=Number(document.getElementById('pg').value);
+ const result=document.getElementById('pr');
+ if(!Number.isFinite(v)||!Number.isFinite(a)||!Number.isFinite(g)||v<0||a<0||a>90||g<=0){
+  result.textContent='Check velocity, angle (0–90°) and gravity';
+  return;
+ }
+ try{
+  const r=await fetch('/api/projectile',{
+   method:'POST',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({velocity:v,angle:a,gravity:g})
+  });
+  const d=await r.json();
+  if(!r.ok){result.textContent=d.error;return;}
+  result.textContent='Flight time: '+d.time+' s\nMaximum height: '+d.height+' m\nRange: '+d.range+' m';
+  drawProjectile(v,a,g,d.time);
+ }catch(e){result.textContent='Connection error';}
+}
+
+function drawProjectile(v,angle,g,T){
+ const c=document.getElementById('projectileCanvas');
+ const w=c.width=c.clientWidth*2,h=c.height=440;
+ const x=c.getContext('2d');x.clearRect(0,0,w,h);
+ const rad=angle*Math.PI/180;
+ const range=v*Math.cos(rad)*T;
+ const height=(v*Math.sin(rad))**2/(2*g);
+ const sx=(w-40)/Math.max(range,1);
+ const sy=(h-40)/Math.max(height,1);
+ x.strokeStyle='#36e6ff';x.lineWidth=4;x.beginPath();
+ for(let i=0;i<=100;i++){
+  const t=T*i/100;
+  const px=20+v*Math.cos(rad)*t*sx;
+  const py=h-20-(v*Math.sin(rad)*t-.5*g*t*t)*sy;
+  if(i===0)x.moveTo(px,py);else x.lineTo(px,py);
+ }
+ x.stroke();
+}
+
+function drawMotion(){
+ const v=Number(document.getElementById('gv').value);
+ const a=Number(document.getElementById('ga').value);
+ const result=document.getElementById('gr');
+ if(!Number.isFinite(v)||!Number.isFinite(a)){
+  result.textContent='Enter valid values';return;
+ }
+ const c=document.getElementById('motionCanvas');
+ const w=c.width=c.clientWidth*2,h=c.height=440;
+ const ctx=c.getContext('2d');ctx.clearRect(0,0,w,h);
+ const points=[];
+ for(let i=0;i<=100;i++){
+  const t=i/10;
+  points.push({t,s:v*t+.5*a*t*t});
+ }
+ const min=Math.min(0,...points.map(p=>p.s));
+ const max=Math.max(1,...points.map(p=>p.s));
+ ctx.strokeStyle='#36e6ff';ctx.lineWidth=4;ctx.beginPath();
+ points.forEach((p,i)=>{
+  const x=20+p.t/10*(w-40);
+  const y=h-20-(p.s-min)/(max-min)*(h-40);
+  if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+ });
+ ctx.stroke();
+ result.textContent='Position-time graph drawn for 0 to 10 seconds.';
+}
+
+async function loadConstants(){
+ try{
+  const r=await fetch('/api/constants');const d=await r.json();
+  document.getElementById('constantResult').textContent=
+   Object.entries(d).map(([k,v])=>k+': '+v).join('\n');
+ }catch(e){document.getElementById('constantResult').textContent='Connection error';}
+}
+
+async function exportCSV(){
+ const raw=document.getElementById('tableData').value.trim();
+ const result=document.getElementById('csvResult');
+ if(!raw){result.textContent='Enter observations first';return;}
+ const rows=raw.split('\n').map(line=>line.split(',').map(x=>x.trim()));
+ try{
+  const r=await fetch('/api/csv',{
+   method:'POST',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({rows})
+  });
+  const d=await r.json();
+  if(!r.ok){result.textContent=d.error;return;}
+  const blob=new Blob([d.csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='physics_observations.csv';a.click();
+  URL.revokeObjectURL(url);
+  result.textContent='CSV file prepared.';
+ }catch(e){result.textContent='Export error';}
+}
+</script>
+</body>
+</html>
