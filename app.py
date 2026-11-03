@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, jsonify
 import math
 import time
@@ -173,4 +174,4 @@ def health():
 
 if __name__ == "__main__":
     print("PHYSICS LAB ULTIMATE FINAL EDITION")
-    app.run(host="127.0.0.1", port=8767, debug=False)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8767)), debug=False)
